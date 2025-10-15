@@ -1,0 +1,28 @@
+name: build-rekordcrate
+
+on:
+  workflow_dispatch:      # lets you run it manually from the Actions tab
+  push:
+    branches: [ main, master ]  # run on pushes to your default branch
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build (release)
+        run: cargo build --release
+
+      - name: Upload artifact (rekordcrate.exe)
+        uses: actions/upload-artifact@v4
+        with:
+          name: rekordcrate-windows
+          path: target/release/rekordcrate.exe
